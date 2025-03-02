@@ -1,5 +1,7 @@
 package pl.piwowarski;
 
+import feign.FeignException;
+import feign.RetryableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,17 +24,25 @@ public class AppApplication {
 
     @EventListener(ApplicationStartedEvent.class)
     public void makeRequestToShawnMendesEndpoint() {
-        ShawnMendesResponse response = shawnMendesClient.makeSearchRequest("shawnmendes", 5);
-        System.out.println(response);
-        List<ShawnMendesResult> results = response.results();
-        ShawnMendesResult shawnMendesResult = results.get(0);
-        System.out.println(shawnMendesResult);
-        results.forEach(
-                result ->
-                        System.out.println(
-                                "shawnMendesResult.artistName(): " + result.artistName() +
-                                        "shawnMendesResult.trackName(): " + result.trackName()
-                        )
-        );
+        try {
+            ShawnMendesResponse response = shawnMendesClient.makeSearchRequest("shawnmendes", 5);
+            List<ShawnMendesResult> results = response.results();
+            results.forEach(
+                    result ->
+                            System.out.println(
+                                    "shawnMendesResult.artistName(): " + result.artistName() +
+                                            " shawnMendesResult.trackName(): " + result.trackName()
+                            )
+            );
+        } catch (FeignException.FeignClientException feignException) {
+            System.out.println("client exception: " + feignException.status());
+        } catch (FeignException.FeignServerException feignException) {
+            System.out.println("server exception: " + feignException.status());
+        } catch (RetryableException retryableException) {
+            System.out.println("retryable Exception: " + retryableException.getMessage());
+        } catch (FeignException feignException) {
+            System.out.println(feignException.getMessage());
+            System.out.println(feignException.status());
+        }
     }
 }
