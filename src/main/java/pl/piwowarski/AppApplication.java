@@ -9,6 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.event.EventListener;
+import pl.piwowarski.itunes.ItunesProxy;
+import pl.piwowarski.itunes.ItunesResponse;
+import pl.piwowarski.itunes.ItunesResult;
 
 import java.util.List;
 
@@ -18,7 +21,7 @@ import java.util.List;
 public class AppApplication {
 
     @Autowired
-    private ShawnMendesProxy shawnMendesClient;
+    private ItunesProxy itunesClient;
 
     public static void main(String[] args) {
         SpringApplication.run(AppApplication.class, args);
@@ -27,8 +30,8 @@ public class AppApplication {
     @EventListener(ApplicationStartedEvent.class)
     public void makeRequestToShawnMendesEndpoint() {
         try {
-            ShawnMendesResponse response = shawnMendesClient.makeSearchRequest("shawnmendes", 5);
-            List<ShawnMendesResult> results = response.results();
+            ItunesResponse response = itunesClient.makeSearchRequest("shawnmendes", 5);
+            List<ItunesResult> results = response.results();
             results.forEach(
                     result ->
                             System.out.println(
