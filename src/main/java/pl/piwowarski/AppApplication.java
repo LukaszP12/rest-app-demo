@@ -11,6 +11,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.event.EventListener;
 import pl.piwowarski.itunes.ItunesProxy;
 import pl.piwowarski.sampleshawnmendesserver.SampleServerShawnMendesResponse;
+import pl.piwowarski.sampleshawnmendesserver.SampleShawnMendesRequest;
 import pl.piwowarski.sampleshawnmendesserver.SampleShawnMendesServerProxy;
 
 @SpringBootApplication
@@ -34,6 +35,11 @@ public class AppApplication {
 //            ItunesResponse response = itunesClient.makeSearchRequest("shawnmendes", 5);
             SampleServerShawnMendesResponse response = sampleShawnMendesServerClient.fetchAllSongs("id1");
             log.info(response);
+            sampleShawnMendesServerClient.addSong(new SampleShawnMendesRequest("Welcome to the jungle"));
+            sampleShawnMendesServerClient.addSong(new SampleShawnMendesRequest("Back in black"));
+            log.info(sampleShawnMendesServerClient.fetchAllSongs("0"));
+            log.info(sampleShawnMendesServerClient.fetchAllSongs("1"));
+
         } catch (FeignException.FeignClientException feignException) {
             System.out.println("client exception: " + feignException.status());
             log.error("client exception: " + feignException.status());
