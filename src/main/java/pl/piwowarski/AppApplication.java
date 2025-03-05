@@ -40,6 +40,12 @@ public class AppApplication {
             log.info(sampleShawnMendesServerClient.fetchAllSongs("0"));
             log.info(sampleShawnMendesServerClient.fetchAllSongs("1"));
 
+            sampleShawnMendesServerClient.deleteByPathVariableId(0);
+            log.info(sampleShawnMendesServerClient.fetchAllSongs("0"));
+
+            sampleShawnMendesServerClient.deleteByIdUsingQueryParam(1);
+            log.info(sampleShawnMendesServerClient.fetchAllSongs("0"));
+
         } catch (FeignException.FeignClientException feignException) {
             System.out.println("client exception: " + feignException.status());
             log.error("client exception: " + feignException.status());
