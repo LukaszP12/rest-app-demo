@@ -9,8 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.event.EventListener;
-
-import java.util.List;
+import pl.piwowarski.itunes.ItunesProxy;
+import pl.piwowarski.sampleshawnmendesserver.SampleServerShawnMendesResponse;
+import pl.piwowarski.sampleshawnmendesserver.SampleShawnMendesServerProxy;
 
 @SpringBootApplication
 @EnableFeignClients
@@ -18,7 +19,10 @@ import java.util.List;
 public class AppApplication {
 
     @Autowired
-    private ShawnMendesProxy shawnMendesClient;
+    private ItunesProxy itunesClient;
+
+    @Autowired
+    private SampleShawnMendesServerProxy sampleShawnMendesServerClient;
 
     public static void main(String[] args) {
         SpringApplication.run(AppApplication.class, args);
@@ -27,15 +31,9 @@ public class AppApplication {
     @EventListener(ApplicationStartedEvent.class)
     public void makeRequestToShawnMendesEndpoint() {
         try {
-            ShawnMendesResponse response = shawnMendesClient.makeSearchRequest("shawnmendes", 5);
-            List<ShawnMendesResult> results = response.results();
-            results.forEach(
-                    result ->
-                            System.out.println(
-                                    "shawnMendesResult.artistName(): " + result.artistName() +
-                                            " shawnMendesResult.trackName(): " + result.trackName()
-                            )
-            );
+//            ItunesResponse response = itunesClient.makeSearchRequest("shawnmendes", 5);
+            SampleServerShawnMendesResponse response = sampleShawnMendesServerClient.fetchAllSongs("id1");
+            log.info(response);
         } catch (FeignException.FeignClientException feignException) {
             System.out.println("client exception: " + feignException.status());
             log.error("client exception: " + feignException.status());
