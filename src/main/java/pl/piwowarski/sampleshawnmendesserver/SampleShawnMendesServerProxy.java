@@ -23,6 +23,6 @@ public interface SampleShawnMendesServerProxy {
     void deleteByPathVariableId(@PathVariable int songId);
 
     @DeleteMapping("/shawn/songs")
-    void deleteByIdUsingQueryParam(@RequestParam int songId);
+    void deleteByIdUsingQueryParam(@RequestParam(name = "id") int songId);
 
 }
